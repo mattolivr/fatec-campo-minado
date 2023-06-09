@@ -2,6 +2,7 @@ from enum import Enum
 
 from entidades.menu import Menu
 from entidades.tabuleiro import Tabuleiro
+from entidades.tabuleiro import TipoCampo
 
 class Dificuldade(Enum):
     FACIL = 0.15
@@ -76,19 +77,44 @@ class Jogo():
     def solicitaConfirmacao(self):
         self.menu.aguardaConfirmacao()
 
-    def insereCoordenada(self):
-        pass
+    def insereCoordenada(self, linha: int, coluna: int):
+        jogo.mostraTabuleiro()
+        tipoCampo = self.tabuleiro.verificaCampo(linha, coluna)
 
-jogo = Jogo()
-jogo.iniciaJogo()
+        if (tipoCampo == TipoCampo.BOMBA):
+            self.menu.exibirErro("Você perdeu!!")
+            return False
+        
+        if (tipoCampo == TipoCampo.ZERO):
+            pass
+            # Limpar zeros próximos
+        
+        if (tipoCampo == TipoCampo.DICA):
+            pass
+            # Atualizar somente campo
 
-emPartida = True
+        print(tipoCampo)
+        return True
 
-while(emPartida):
-    jogo.mostraTabuleiro()
-    
-    linha, coluna = jogo.solicitaCoordenada()
+tentarNovamente = True
+while (tentarNovamente):
+    jogo = Jogo()
+    jogo.iniciaJogo()
 
-    # atualiza tabuleiro
-    jogo.mostraTabuleiro()
-    jogo.solicitaConfirmacao()
+    tentarNovamente = False
+    emPartida = True
+
+    while(emPartida):
+        jogo.mostraTabuleiro()
+        
+        linha, coluna = jogo.solicitaCoordenada()
+
+        emPartida = jogo.insereCoordenada(linha, coluna)
+
+        if (emPartida):
+            jogo.solicitaConfirmacao()
+            jogo.menu.limpaMenu()
+        else:
+            # criar solicitaLogico no menu
+            # inserir tentar novamente
+            jogo.menu.limpaConsole()

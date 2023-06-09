@@ -3,8 +3,14 @@ import random
 import math
 
 from openpyxl import Workbook
+from enum import Enum
+class TipoCampo(Enum):
+    ZERO = 0
+    DICA = 1
+    BOMBA = 9
 
 class Tabuleiro():
+
     def __init__(self, altura: int, largura: int, dificuldade: float):
         self.altura = altura
         self.largura = largura
@@ -33,6 +39,17 @@ class Tabuleiro():
             if (linha != self.altura):
                 tabuleiroString += os.linesep
         return tabuleiroString
+
+    def verificaCampo(self, linha: int, coluna: int):
+        planilha = self.excel.active
+
+        valor = planilha.cell(row = linha, column = coluna).value
+
+        if (valor == TipoCampo.ZERO.value):
+            return TipoCampo.ZERO
+        if (valor == TipoCampo.BOMBA.value):
+            return TipoCampo.BOMBA
+        return TipoCampo.DICA
 
     def __aplicaBombas(self, bombas: list[list[int, int]]):
         for bomba in bombas:
@@ -87,9 +104,3 @@ class Tabuleiro():
                 planilha.cell(row = linha + 1, column = coluna + 1, value = self.campo[linha][coluna])
 
         self.excel.save("tabuleiro.xlsx")
-
-    def __getValorExcel(self, linha: int, coluna: int):
-        planilha = self.excel.active
-
-        return planilha.cell(row = linha + 1, column = coluna + 1).value
-
