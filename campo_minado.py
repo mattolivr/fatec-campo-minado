@@ -3,6 +3,7 @@ import random
 import math
 
 from entidades.menu import Menu
+from entidades.tabuleiro import Tabuleiro
 
 class Dificuldade(Enum):
     FACIL = 0.15
@@ -15,10 +16,8 @@ class Jogo():
         self.dificuldade = 0
         self.alturaTabuleiro = 0
         self.larguraTabuleiro = 0
-        self.tabuleiro = list()
+        self.tabuleiro = None
         self.bombas = list()
-
-        self.iniciaJogo()
 
     def iniciaJogo(self):
         self.menu.titulo = "CAMPO MINADO"
@@ -29,9 +28,9 @@ class Jogo():
 
         self.sorteiaBombas()
         print(self.bombas)
-        self.montaTabuleiro()
-        for linha in self.tabuleiro:
-            print(linha)
+
+        self.tabuleiro = Tabuleiro(self.alturaTabuleiro, self.larguraTabuleiro)
+        self.tabuleiro.toString()
 
     def selecionaDificuldade(self):
         self.menu.insereOpcoes([
@@ -53,11 +52,11 @@ class Jogo():
         return dificuldades[opcao - 1]
 
     def sorteiaBombas(self):
-        quantidadeBombas = math.ceil((self.larguraTabuleiro * self.alturaTabuleiro) * self.dificuldade.value)
+        quantidadeBombas = math.ceil((self.alturaTabuleiro * self.larguraTabuleiro) * self.dificuldade.value)
         bombasInseridas = 0
 
         while(bombasInseridas < quantidadeBombas):
-            novaBomba = [random.randint(1, self.larguraTabuleiro), random.randint(1, self.alturaTabuleiro)]
+            novaBomba = [random.randint(1, self.alturaTabuleiro), random.randint(1, self.alturaTabuleiro)]
 
             if (not self.__existeBomba(novaBomba)):
                 self.bombas.append(novaBomba)
@@ -73,14 +72,23 @@ class Jogo():
         for linha in range(self.alturaTabuleiro):
             tabuleiroLinha = list()
             for coluna in range(self.larguraTabuleiro):
-                for bomba in self.bombas:
-                    if (bomba[0] == (coluna + 1) and bomba[1] == (linha + 1)):
-                        tabuleiroLinha.append(" 0 ")
-                        continue
-                tabuleiroLinha.append(" - ")
+                tabuleiroLinha.append(self.__aplicaCampo(linha, coluna))
             self.tabuleiro.append(tabuleiroLinha)
 
+    def __aplicaCampo(self, linha: int, coluna: int):
+        existeBomba = self.__verificaBomba(linha, coluna)
+        if (existeBomba):
+            return " 0 "
+        return " - "
+        
+    def __verificaBomba(self, linha: int, coluna: int):
+        for bomba in self.bombas:
+            if (bomba[0] == (linha + 1) and bomba[1] == (coluna + 1)):
+                return True
+        return False
+
 jogo = Jogo()
+jogo.iniciaJogo()
 '''
 - Apresentar menu de escolha para cada nível
 - Montar o tabuleiro
