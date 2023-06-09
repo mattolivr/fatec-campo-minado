@@ -1,6 +1,4 @@
 from enum import Enum
-import random
-import math
 
 from entidades.menu import Menu
 from entidades.tabuleiro import Tabuleiro
@@ -17,7 +15,6 @@ class Jogo():
         self.alturaTabuleiro = 0
         self.larguraTabuleiro = 0
         self.tabuleiro = None
-        self.bombas = list()
 
     def iniciaJogo(self):
         self.menu.titulo = "CAMPO MINADO"
@@ -26,12 +23,7 @@ class Jogo():
         self.alturaTabuleiro = self.menu.aguardaInteiro("Insira a altura do tabuleiro")
         self.larguraTabuleiro = self.menu.aguardaInteiro("Insira a largura do tabuleiro")
 
-        self.sorteiaBombas()
-        print(self.bombas)
-
-        self.tabuleiro = Tabuleiro(self.alturaTabuleiro, self.larguraTabuleiro)
-        self.tabuleiro.aplicaBombas(bombas)
-        self.mostraTabuleiro()
+        self.tabuleiro = Tabuleiro(self.alturaTabuleiro, self.larguraTabuleiro, self.dificuldade.value)
 
     def selecionaDificuldade(self):
         self.menu.insereOpcoes([
@@ -52,31 +44,8 @@ class Jogo():
         self.menu.limpaCorpo()
         return dificuldades[opcao - 1]
 
-    def sorteiaBombas(self):
-        quantidadeBombas = math.ceil((self.alturaTabuleiro * self.larguraTabuleiro) * self.dificuldade.value)
-        bombasInseridas = 0
-
-        while(bombasInseridas < quantidadeBombas):
-            novaBomba = [random.randint(1, self.alturaTabuleiro), random.randint(1, self.alturaTabuleiro)]
-
-            if (not self.__existeBomba(novaBomba)):
-                self.bombas.append(novaBomba)
-                bombasInseridas += 1
-
     def mostraTabuleiro(self):
         self.menu.exibirMensagem(self.tabuleiro.toString())
-
-    def __existeBomba(self, novaBomba: list[int]):
-        for bomba in self.bombas:
-            if (bomba[0] == novaBomba[0] and bomba[1] == novaBomba[1]):
-                return True
-        return False        
-        
-    def __verificaBomba(self, linha: int, coluna: int):
-        for bomba in self.bombas:
-            if (bomba[0] == (linha + 1) and bomba[1] == (coluna + 1)):
-                return True
-        return False
 
 jogo = Jogo()
 jogo.iniciaJogo()

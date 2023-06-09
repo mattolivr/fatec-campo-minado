@@ -1,15 +1,22 @@
 import os
+import random
+import math
+
 from openpyxl import Workbook
 
 class Tabuleiro():
-    def __init__(self, altura: int, largura: int):
-        self.campo = []
+    def __init__(self, altura: int, largura: int, dificuldade: float):
         self.altura = altura
         self.largura = largura
+        self.dificuldade = dificuldade
+
+        self.campo = list()
         self.bombas = list()
         self.excel = Workbook()
 
         self.__montaTabuleiro()
+        self.__sorteiaBombas()
+        self.__aplicaBombas(self.bombas)
         self.__montaExcel()
 
     def toString(self):
@@ -24,7 +31,7 @@ class Tabuleiro():
             tabuleiroString += str(linha + 1) + " " + colunas + os.linesep
         return tabuleiroString
 
-    def aplicaBombas(self, bombas: list[list[int, int]]):
+    def __aplicaBombas(self, bombas: list[list[int, int]]):
         for bomba in bombas:
             linha = bomba[0] - 1
             coluna = bomba[1] - 1
@@ -47,15 +54,21 @@ class Tabuleiro():
             self.campo.append(tabuleiroLinha)
 
     def __sorteiaBombas(self):
-        quantidadeBombas = math.ceil((self.alturaTabuleiro * self.larguraTabuleiro) * self.dificuldade.value)
+        quantidadeBombas = math.ceil((self.altura * self.largura) * self.dificuldade)
         bombasInseridas = 0
 
         while(bombasInseridas < quantidadeBombas):
-            novaBomba = [random.randint(1, self.alturaTabuleiro), random.randint(1, self.alturaTabuleiro)]
+            novaBomba = [random.randint(1, self.altura), random.randint(1, self.altura)]
 
             if (not self.__existeBomba(novaBomba)):
                 self.bombas.append(novaBomba)
                 bombasInseridas += 1
+
+    def __existeBomba(self, novaBomba: list[int]):
+        for bomba in self.bombas:
+            if (bomba[0] == novaBomba[0] and bomba[1] == novaBomba[1]):
+                return True
+        return False       
 
 
     def __montaExcel(self):
