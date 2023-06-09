@@ -6,8 +6,14 @@ class Menu:
         self.corpo = None
         self.retorno = None
 
-    def exibirMenu(self):
+    def exibirMenu(self, corpo: str, retorno: str):
         self.limpaConsole()
+
+        if (corpo != None and corpo != ""):
+            self.corpo = corpo
+
+        if (retorno != None and retorno != ""):
+            self.retorno = retorno
         
         if (self.titulo != None):
             titulo = ("=" * 6) + self.titulo + ("=" * 6)
@@ -22,11 +28,9 @@ class Menu:
             print(self.retorno)
 
     def exibirErro(self, erro: str):
-        self.retorno = erro
+        self.exibirMenu(None, erro)
 
-        self.exibirMensagem()
         self.aguardaConfirmacao()
-
         self.limpaRetorno()
 
     def exibirMensagem(self, mensagem: str):
@@ -39,23 +43,22 @@ class Menu:
         if (mensagem != None):
             print(mensagem)
 
-    def aguardaDado(self, mensagem: str):
-        self.exibirMenu()
+    def aguardaDado(self, corpo: str, mensagem: str):
+        self.exibirMenu(corpo, None)
 
         dado = input(mensagem + ": ")
         return dado
 
     def aguardaConfirmacao(self):
-        print(os.linesep)
-        input("Insira qualquer coisa para continuar: ")
+        input("Pressione enter coisa para continuar: ")
 
-    def aguardaInteiro(self, mensagem: str):
-        dado = self.aguardaDado(mensagem)
+    def aguardaInteiro(self, corpo: str, mensagem: str):
+        dado = self.aguardaDado(corpo, mensagem)
 
         # Validar ESC
         while(not dado.isnumeric()):
             self.exibirErro("Entrada inválida. Por favor, insira um número inteiro: ")
-            dado = input()
+            dado = self.aguardaDado(corpo, mensagem)
 
         return int(dado)
 

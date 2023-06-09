@@ -28,7 +28,10 @@ class Tabuleiro():
 
         for linha in range(self.altura):
             colunas = " ".join(map(str, self.campo[linha]))
-            tabuleiroString += str(linha + 1) + " " + colunas + os.linesep
+            tabuleiroString += str(linha + 1) + " " + colunas
+
+            if (linha != self.altura):
+                tabuleiroString += os.linesep
         return tabuleiroString
 
     def __aplicaBombas(self, bombas: list[list[int, int]]):
