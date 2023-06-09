@@ -30,7 +30,8 @@ class Jogo():
         print(self.bombas)
 
         self.tabuleiro = Tabuleiro(self.alturaTabuleiro, self.larguraTabuleiro)
-        self.tabuleiro.toString()
+        self.tabuleiro.aplicaBombas(bombas)
+        self.mostraTabuleiro()
 
     def selecionaDificuldade(self):
         self.menu.insereOpcoes([
@@ -62,24 +63,14 @@ class Jogo():
                 self.bombas.append(novaBomba)
                 bombasInseridas += 1
 
+    def mostraTabuleiro(self):
+        self.menu.exibirMensagem(self.tabuleiro.toString())
+
     def __existeBomba(self, novaBomba: list[int]):
         for bomba in self.bombas:
             if (bomba[0] == novaBomba[0] and bomba[1] == novaBomba[1]):
                 return True
         return False        
-
-    def montaTabuleiro(self):
-        for linha in range(self.alturaTabuleiro):
-            tabuleiroLinha = list()
-            for coluna in range(self.larguraTabuleiro):
-                tabuleiroLinha.append(self.__aplicaCampo(linha, coluna))
-            self.tabuleiro.append(tabuleiroLinha)
-
-    def __aplicaCampo(self, linha: int, coluna: int):
-        existeBomba = self.__verificaBomba(linha, coluna)
-        if (existeBomba):
-            return " 0 "
-        return " - "
         
     def __verificaBomba(self, linha: int, coluna: int):
         for bomba in self.bombas:
