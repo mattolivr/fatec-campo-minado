@@ -89,6 +89,11 @@ class Jogo():
             self.tabuleiro.abreCampo(linha, coluna)
             
         jogo.mostraTabuleiro()
+
+        if jogo.tabuleiro.camposDescobertos == (jogo.tabuleiro.altura * jogo.tabuleiro.largura - len(jogo.tabuleiro.bombas)):
+            jogo.menu.exibirMensagem("Você venceu!!!")
+            jogo.solicitaConfirmacao()
+            return False
         return True
 
 tentarNovamente = True
