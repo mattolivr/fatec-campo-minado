@@ -85,15 +85,10 @@ class Jogo():
             self.menu.exibirErro("Você perdeu!!")
             return False
         
-        if (tipoCampo == TipoCampo.ZERO):
-            pass
-            # Limpar zeros próximos
-        
         if (tipoCampo == TipoCampo.DICA):
-            pass
-            # Atualizar somente campo
-
-        print(tipoCampo)
+            self.tabuleiro.abreCampo(linha, coluna)
+            
+        jogo.mostraTabuleiro()
         return True
 
 tentarNovamente = True
@@ -107,7 +102,14 @@ while (tentarNovamente):
     while(emPartida):
         jogo.mostraTabuleiro()
         
-        linha, coluna = jogo.solicitaCoordenada()
+        entradaInvalida = True
+        while (entradaInvalida):
+            linha, coluna = jogo.solicitaCoordenada()
+
+            if jogo.tabuleiro.campo[linha - 1][coluna - 1] != "■":
+                jogo.menu.exibirErro("Campo já descoberto! Insira outra coordenada")
+            else:
+                entradaInvalida = False
 
         emPartida = jogo.insereCoordenada(linha, coluna)
 
@@ -115,6 +117,6 @@ while (tentarNovamente):
             jogo.solicitaConfirmacao()
             jogo.menu.limpaMenu()
         else:
-            # criar solicitaLogico no menu
-            # inserir tentar novamente
+            jogo.menu.insereOpcoes(["Sim", "Não"])
+            tentarNovamente = jogo.menu.aguardaInteiro(None, "Deseja continuar jogando?") == 1
             jogo.menu.limpaConsole()

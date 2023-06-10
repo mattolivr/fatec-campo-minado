@@ -5,7 +5,6 @@ import math
 from openpyxl import Workbook
 from enum import Enum
 class TipoCampo(Enum):
-    ZERO = 0
     DICA = 1
     BOMBA = 9
 
@@ -16,6 +15,7 @@ class Tabuleiro():
         self.largura = largura
         self.dificuldade = dificuldade
 
+        self.camposDescobertos = 0
         self.campo = list()
         self.bombas = list()
         self.excel = Workbook()
@@ -24,6 +24,7 @@ class Tabuleiro():
         self.__sorteiaBombas()
         self.__aplicaBombas(self.bombas)
         self.__montaExcel()
+        self.__escondeTabuleiro()
 
     def toString(self):
         # TODO: Tratar valores com 2 casas decimais
@@ -42,14 +43,18 @@ class Tabuleiro():
 
     def verificaCampo(self, linha: int, coluna: int):
         planilha = self.excel.active
-
         valor = planilha.cell(row = linha, column = coluna).value
 
-        if (valor == TipoCampo.ZERO.value):
-            return TipoCampo.ZERO
         if (valor == TipoCampo.BOMBA.value):
             return TipoCampo.BOMBA
         return TipoCampo.DICA
+
+    def abreCampo(self, linha: int, coluna: int):
+        planilha = self.excel.active
+        valor = planilha.cell(row = linha, column = coluna).value
+
+        self.campo[linha - 1][coluna - 1] = valor
+        self.camposDescobertos += 1
 
     def __aplicaBombas(self, bombas: list[list[int, int]]):
         for bomba in bombas:
@@ -72,6 +77,11 @@ class Tabuleiro():
             for coluna in range(self.largura):
                 tabuleiroLinha.append(0)
             self.campo.append(tabuleiroLinha)
+
+    def __escondeTabuleiro(self):
+        for linha in range(self.altura):
+            for coluna in range(self.largura):
+                self.campo[linha][coluna] = "■"
 
     def __sorteiaBombas(self):
         quantidadeBombas = math.ceil((self.altura * self.largura) * self.dificuldade)

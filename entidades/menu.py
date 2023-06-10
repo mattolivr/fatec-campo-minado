@@ -50,7 +50,7 @@ class Menu:
         return dado
 
     def aguardaConfirmacao(self):
-        input("Pressione enter coisa para continuar: ")
+        input("Pressione enter para continuar: ")
 
     def aguardaInteiro(self, corpo: str, mensagem: str):
         dado = self.aguardaDado(corpo, mensagem)
